@@ -1,4 +1,5 @@
 require "rest-client"
+require "json"
 
 VERSION = '/2011-12-03'
 
@@ -25,11 +26,11 @@ class Resource
   end
 
   def create (data)
-    @site[@baseurl].post data.to_json, :content_type => :json, :accept => :json
+    @site[@baseurl].post JSON.dump(data), :content_type => :json, :accept => :json
   end
 
   def update (id, data)
-    @site[@baseurl + "/#{id}"].put data.to_json, :content_type => :json, :accept => :json
+    @site[@baseurl + "/#{id}"].put JSON.dump(data), :content_type => :json, :accept => :json
   end
 
   def delete (id)
