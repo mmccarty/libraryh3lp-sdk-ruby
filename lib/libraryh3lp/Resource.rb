@@ -4,10 +4,10 @@ VERSION = '/2011-12-03'
 
 class Resource
 
-  def initialize (host, baseurl, username, passwd, rest_resource = nil)
+  def initialize (host, baseurl, username, passwd)
     @host    = host
     @baseurl = baseurl
-    @site    = rest_resource ? rest_resource : RestClient::Resource.new('https://' + host + VERSION)
+    @site    = RestClient::Resource.new('https://' + host + VERSION)
     response = @site['/auth/login'].post :username => username, :password => passwd
     @cookies = response.cookies
   end
