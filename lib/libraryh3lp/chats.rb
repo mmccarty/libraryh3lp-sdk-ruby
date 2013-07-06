@@ -1,61 +1,37 @@
-require "libraryh3lp/Resource"
-require "json"
+require 'libraryh3lp/Resource'
 
 class Chats < Resource
-
-  def initialize (host, username, passwd)
-    super host, "/conversations", username, passwd
+  def initialize(host, username, passwd)
+    super host, 'conversations', username, passwd
   end
 
-  def listDay (year, month, day, to = nil, format = 'json')
-    dt = DateTime.new(year, month, day).strftime("%Y/%m/%d")
-    params = {'format' => format}
-    if to then
-      params['to'] = to
-    end
-    response = @site[@baseurl + "/#{dt}"].get(:params => params)
-    return [JSON.parse(response.to_str), response.code]
+  def listDay(year, month, day, to = nil, format = 'json')
+    dt = DateTime.new(year, month, day).strftime '%Y/%m/%d'
+    get_json dt, params: opt_params(format: format, to: to)
   end
 
-  def listMonth (year, month, to = nil)
-    dt = DateTime.new(year, month, 1).strftime("%Y/%m")
-    params = {}
-    if to then
-      params['to'] = to
-    end
-    response = @site[@baseurl + "/#{dt}"].get(:params => params)
-    return [JSON.parse(response.to_str), response.code]
+  def listMonth(year, month, to = nil)
+    dt = DateTime.new(year, month, 1).strftime '%Y/%m'
+    get_json dt, params: opt_params(to: to)
   end
 
-  def listYear (year, to = nil)
-    params = {}
-    if to then
-      params['to'] = to
-    end
-    response = @site[@baseurl + "/#{year}"].get(:params => params)
-    return [JSON.parse(response.to_str), response.code]
+  def listYear(year, to = nil)
+    get_json year, params: opt_params(to: to)
   end
 
-  def anonymizeChats (ids, to = nil)
-    params = {"ids" => ids.join(',')}
-    response = @site[@baseurl + "/anonymize-conversations"].post params, :content_type => :plain
-    return [JSON.parse(response.to_str), response.code]
+  def anonymizeChats(ids, to = nil)
+    post_json 'anonymize-conversations', { ids: ids.join(',') }, content_type: :plain
   end
 
-  def deleteChats (ids, to = nil)
-    params = {"ids" => ids.join(',')}
-    response = @site[@baseurl + "/delete-conversations"].post params, :content_type => :plain
-    return [JSON.parse(response.to_str), response.code]
+  def deleteChats(ids, to = nil)
+    post_json 'delete-conversations', { ids: ids.join(',') }, content_type: :plain
   end
 
-  def deleteTranscripts (ids, to = nil)
-    params = {"ids" => ids.join(',')}
-    response = @site[@baseurl + "/delete-transcripts"].post params, :content_type => :plain
-    return [JSON.parse(response.to_str), response.code]
+  def deleteTranscripts(ids, to = nil)
+    post_json 'delete-transcripts', { ids: ids.join(',') }, content_type: :plain
   end
 
-  def archiveConversations (ids, to = nil)
-    response = @site[@baseurl + "/archive"].get({:params => {"ids" => ids.join(',')}, :content_type => :plain})
-    return [response, response.code]
+  def archiveConversations(ids, to = nil)
+    get 'archive', params: { ids: ids.join(',') }, content_type: :plain
   end
 end

@@ -1,8 +1,7 @@
-require "libraryh3lp/Resource"
+require 'libraryh3lp/Resource'
 
 class Accounts < Resource
-
-  def initialize (host, username, passwd)
-    super host, "/accounts", username, passwd
+  def initialize(host, username, passwd)
+    super host, 'accounts', username, passwd
   end
 end
