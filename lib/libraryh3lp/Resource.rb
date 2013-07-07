@@ -14,13 +14,15 @@ class Resource
     @cookies = response.cookies
   end
 
-  %w(get post).each do |name|
+  %w(get post put delete).each do |name|
     define_method name do |url, *args|
-      response = @site["#{ @baseurl }/#{ url }"].send name, *args
+      args = attach_cookie(*args)
+      response = @site[url != '' ? "#{ @baseurl }/#{ url }" : "#{ @baseurl }"].send name, *args
       return response, response.code
     end
 
     define_method "#{ name }_json" do |url, *args|
+      args = attach_cookie(*args)
       json { send name, url, *args }
     end
   end
@@ -30,27 +32,36 @@ class Resource
     return JSON.parse(response.to_str), code
   end
 
+  def attach_cookie(*args)
+    if not args.empty?
+      args[-1] = args.last.merge(cookies: @cookies)
+    else
+      args.push(cookies: @cookies)
+    end
+    return args
+  end
+
   def opt_params(params)
     params.delete_if { |k, v| v.nil? }
   end
 
   def list
-    @site[@baseurl].get cookies: @cookies
+    get_json ''
   end
 
   def read(id)
-    @site["#{ @baseurl }/#{ id }"].get cookies: @cookies
+    get_json "#{ id }"
   end
 
   def create(data)
-    @site[@baseurl].post JSON.dump(data), content_type: :json, accept: :json
+    post_json '', JSON.dump(data), content_type: :json, accept: :json
   end
 
   def update(id, data)
-    @site["#{ @baseurl }/#{ id }"].put JSON.dump(data), content_type: :json, accept: :json
+    put_json "#{ id }", JSON.dump(data), content_type: :json, accept: :json
   end
 
-  def delete(id)
-    @site["#{ @baseurl }/#{ id }"].delete
+  def destroy(id)
+    delete_json "#{ id }"
   end
 end
