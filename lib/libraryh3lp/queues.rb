@@ -5,32 +5,24 @@ class Queues < Resource
     super host, 'queues', username, passwd
   end
 
-  def listOperators(queue_id)
-    get_json "#{ queue_id }/operators"
-  end
+  %w(operator gateway).each do |name|
+    title = name.split(/(\W)/).map(&:capitalize).join
 
-  def createOperator(queue_id, data)
-    create data, "#{ queue_id }/operators"
+    define_method "list#{ title }s" do |id|
+      get_json "#{ id }/#{ name }s"
+    end
+
+    define_method "create#{ title }" do |id, data|
+      create data, "#{ id }/#{ name }s"
+    end
+
+    define_method "destroy#{ title }" do |id, item_id|
+      delete_json "#{ id}/#{ name }s/#{ item_id}"
+    end
   end
 
   def updateOperator(queue_id, operator_id, data)
     update queue_id, data, "#{ queue_id }/operators/#{ operator_id }"
-  end
-
-  def destroyOperator(queue_id, operator_id)
-    delete_json "#{ queue_id}/operators/#{ operator_id}"
-  end
-
-  def listGateways(queue_id)
-    get_json "#{ queue_id }/gateways"
-  end
-
-  def createGateway(queue_id, data)
-    create data, "#{ queue_id }/gateways"
-  end
-
-  def destroyGateway(queue_id, gateway_id)
-    delete_json "#{ queue_id}/gateways/#{ gateway_id}"
   end
 
   def showProfile(queue_id)
