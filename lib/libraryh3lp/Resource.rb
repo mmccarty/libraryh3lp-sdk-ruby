@@ -16,13 +16,10 @@ class Resource
 
   %w(get post put delete).each do |name|
     define_method name do |url, *args|
-      args = attach_cookie(*args)
-      response = @site[url != '' ? "#{ @baseurl }/#{ url }" : "#{ @baseurl }"].send name, *args
-      return response, response.code
+      raw_request name, url != '' ? "#{ @baseurl }/#{ url }" : "#{ @baseurl }", *args
     end
 
     define_method "#{ name }_json" do |url, *args|
-      args = attach_cookie(*args)
       json { send name, url, *args }
     end
   end
@@ -30,6 +27,16 @@ class Resource
   def json
     response, code = yield
     return JSON.parse(response.to_str), code
+  end
+
+  def raw_request(type, url, *args)
+    args = attach_cookie(*args)
+    response = @site[url].send type, *args
+    return response, response.code
+  end
+
+  def raw_json(type, url, *args)
+    json { raw_request type, url, *args }
   end
 
   def attach_cookie(*args)
