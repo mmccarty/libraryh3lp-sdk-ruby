@@ -53,12 +53,12 @@ class Resource
     get_json "#{ id }"
   end
 
-  def create(data)
-    post_json '', JSON.dump(data), content_type: :json, accept: :json
+  def create(data, url = '')
+    post_json url, JSON.dump(data), content_type: :json, accept: :json
   end
 
-  def update(id, data)
-    put_json "#{ id }", JSON.dump(data), content_type: :json, accept: :json
+  def update(id, data, url = "#{ id }")
+    put_json url, JSON.dump(data), content_type: :json, accept: :json
   end
 
   def destroy(id)
