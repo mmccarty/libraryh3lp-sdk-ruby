@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
   s.version     = '0.1.0'
   s.date        = '2013-07-18'
   s.summary     = "Libraryh3lp Ruby SDK"
-  s.description = "Libraryh3lp Softward Development Kit for Ruby"
+  s.description = "Convenience wrappers for the LibraryH3lp REST API."
   s.authors     = ["Mike McCarty"]
   s.email       = 'mike@nubgames.come'
   s.files       = [
@@ -18,5 +18,5 @@ Gem::Specification.new do |s|
                    "lib/libraryh3lp/users.rb",
                    "lib/libraryh3lp/widgets.rb"]
   s.homepage    =
-    'http://libraryh3lp.com'
+    'https://github.com/nubgames/libraryh3lp-sdk-ruby'
 end
